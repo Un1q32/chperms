@@ -49,7 +49,7 @@ liboldworld/src/%.o: liboldworld/src/%.c
 install:
 	@printf "Installing...\n"
 	@printf "%s\n" "$(PKGNAME) -> $(DESTDIR)$(BINDIR)"
-	$(Q)install -Dm755 $(PKGNAME) $(DESTDIR)$(BINDIR)/$(PKGNAME)
+	$(Q)install -D $(PKGNAME) $(DESTDIR)$(BINDIR)/$(PKGNAME)
 	$(Q)$(STRIP) $(DESTDIR)$(BINDIR)/$(PKGNAME)
 	$(Q)chown root:root $(DESTDIR)$(BINDIR)/$(PKGNAME)
 	$(Q)chmod 6755 $(DESTDIR)$(BINDIR)/$(PKGNAME)
