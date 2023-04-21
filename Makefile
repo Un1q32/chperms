@@ -28,7 +28,7 @@ endif
 ifdef LTO
 	OPTFLAGS += -flto
 endif
-CFLAGS += -Wall -Wextra -Wpedantic -Werror -std=c99 -fPIC -g -Iliboldworld/src
+CFLAGS += -Wall -Wextra -Wpedantic -Werror -std=gnu99 -fPIC -g -Iliboldworld/src
 
 all: $(PKGNAME) liboldworld/liboldworld.a
 
