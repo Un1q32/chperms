@@ -1,0 +1,3 @@
+[submodule "liboldworld"]
+	path = liboldworld
+	url = https://github.com/OldWorldOrdr/liboldworld.git
