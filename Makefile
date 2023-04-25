@@ -54,6 +54,13 @@ install:
 	$(Q)chown root:root $(DESTDIR)$(BINDIR)/$(PKGNAME)
 	$(Q)chmod 6755 $(DESTDIR)$(BINDIR)/$(PKGNAME)
 
+debuginstall:
+	@printf "Installing...\n"
+	@printf "%s\n" "$(PKGNAME) -> $(DESTDIR)$(BINDIR)"
+	$(Q)install -D $(PKGNAME) $(DESTDIR)$(BINDIR)/$(PKGNAME)
+	$(Q)chown root:root $(DESTDIR)$(BINDIR)/$(PKGNAME)
+	$(Q)chmod 6755 $(DESTDIR)$(BINDIR)/$(PKGNAME)
+
 uninstall:
 	@printf "Uninstalling...\n"
 	$(Q)$(RM) -f $(DESTDIR)$(BINDIR)/$(PKGNAME)
