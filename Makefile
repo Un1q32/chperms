@@ -56,7 +56,7 @@ install:
 
 debuginstall:
 	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
-	$(Q)$(CC) $(CFLAGS) -DDEBUG -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld -Iliboldworld/src -g
+	$(Q)$(CC) $(CFLAGS) -DDEBUG -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld -Iliboldworld/src -g -O0
 	@printf "Installing...\n"
 	@printf "%s\n" "$(PKGNAME) -> $(DESTDIR)$(BINDIR)"
 	$(Q)install -D $(PKGNAME) $(DESTDIR)$(BINDIR)/$(PKGNAME)
