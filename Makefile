@@ -28,7 +28,7 @@ endif
 ifdef LTO
 	OPTFLAGS += -flto
 endif
-CFLAGS += -Wall -Wextra -Wpedantic -Werror -std=gnu99 -fPIC -g
+CFLAGS += -Wall -Wextra -Wpedantic -Werror -std=gnu99 -fPIC
 
 LOWOBJS := $(patsubst liboldworld/src/%.c,liboldworld/src/%.o,$(wildcard liboldworld/src/*.c))
 
@@ -55,6 +55,8 @@ install:
 	$(Q)chmod 6755 $(DESTDIR)$(BINDIR)/$(PKGNAME)
 
 debuginstall:
+	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
+	$(Q)$(CC) $(CFLAGS) -DDEBUG -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld -Iliboldworld/src -g
 	@printf "Installing...\n"
 	@printf "%s\n" "$(PKGNAME) -> $(DESTDIR)$(BINDIR)"
 	$(Q)install -D $(PKGNAME) $(DESTDIR)$(BINDIR)/$(PKGNAME)
