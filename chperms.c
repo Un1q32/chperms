@@ -6,7 +6,7 @@
 #include <string.h>
 #include <pwd.h>
 #include <unistd.h>
-#include <liboldworld.h>
+#include "liboldworld.h"
 
 int main(const int argc, const char *argv[]) {
     if (geteuid() != 0) printerr("Must be run as root or setuid");

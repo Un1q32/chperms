@@ -34,7 +34,7 @@ all: $(PKGNAME) liboldworld/liboldworld.a
 
 $(PKGNAME): liboldworld/liboldworld.a $(PKGNAME).c
 	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
-	$(Q)$(CC) $(CFLAGS) $(OPTFLAGS) -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld -Iliboldworld/src
+	$(Q)$(CC) $(CFLAGS) $(OPTFLAGS) -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld
 
 liboldworld/liboldworld.a:
 	@$(MAKE) -C liboldworld/src
@@ -49,7 +49,7 @@ install:
 
 debuginstall:
 	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
-	$(Q)$(CC) $(CFLAGS) -DDEBUG -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld -Iliboldworld/src -g -O0
+	$(Q)$(CC) $(CFLAGS) -DDEBUG -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld -g -O0
 	@printf "Installing...\n"
 	@printf "%s\n" "$(PKGNAME) -> $(DESTDIR)$(BINDIR)"
 	$(Q)install -D $(PKGNAME) $(DESTDIR)$(BINDIR)/$(PKGNAME)
