@@ -30,21 +30,14 @@ ifdef LTO
 endif
 CFLAGS += -Wall -Wextra -Wpedantic -Werror -std=gnu99 -fPIC
 
-LOWOBJS := $(patsubst liboldworld/src/%.c,liboldworld/src/%.o,$(wildcard liboldworld/src/*.c))
-
 all: $(PKGNAME) liboldworld/liboldworld.a
 
 $(PKGNAME): liboldworld/liboldworld.a $(PKGNAME).c
 	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
 	$(Q)$(CC) $(CFLAGS) $(OPTFLAGS) -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld -Iliboldworld/src
 
-liboldworld/liboldworld.a: $(LOWOBJS)
-	@printf " \033[1;34mAR\033[0m liboldworld.a\n"
-	@$(AR) -r liboldworld/liboldworld.a $(LOWOBJS)
-
-liboldworld/src/%.o: liboldworld/src/%.c
-	@printf " \033[1;32mCC\033[0m %s\n" "liboldworld/$(patsubst liboldworld/src/%,%,$<)"
-	$(Q)$(CC) $(CFLAGS) $(OPTFLAGS) -c -o $@ $<
+liboldworld/liboldworld.a:
+	@$(MAKE) -C liboldworld/src
 
 install:
 	@printf "Installing...\n"
