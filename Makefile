@@ -62,4 +62,4 @@ uninstall:
 
 clean:
 	@printf "Cleaning...\n"
-	$(Q)$(RM) -f chperms *.snalyzerinfo *.analyzerinfo liboldworld/liboldworld.* liboldworld/src/*.o
+	$(Q)$(RM) -f chperms liboldworld/liboldworld.* liboldworld/src/*.o
