@@ -3,17 +3,15 @@ PKGNAME := chperms
 PREFIX := /usr/local
 BINDIR := $(PREFIX)/bin
 OS := $(shell uname -s)
-ifndef CC
-	HASGCC := $(shell command -v $(CROSS_COMPILE)gcc 2> /dev/null)
-	ifdef HASGCC
-		CC := $(CROSS_COMPILE)gcc
+HASGCC := $(shell command -v $(CROSS_COMPILE)gcc 2> /dev/null)
+ifdef HASGCC
+	CC := $(CROSS_COMPILE)gcc
+else
+	HASCLANG := $(shell command -v $(CROSS_COMPILE)clang 2> /dev/null)
+	ifdef HASCLANG
+		CC := $(CROSS_COMPILE)clang
 	else
-		HASCLANG := $(shell command -v $(CROSS_COMPILE)clang 2> /dev/null)
-		ifdef HASCLANG
-			CC := $(CROSS_COMPILE)clang
-		else
-			CC := $(CROSS_COMPILE)cc
-		endif
+		CC := $(CROSS_COMPILE)cc
 	endif
 endif
 STRIP := $(CROSS_COMPILE)strip
