@@ -32,26 +32,20 @@ ifdef LTO
 endif
 CFLAGS += -Wall -Wextra -Wpedantic -Werror -std=gnu99 -fPIC
 
-all: $(PKGNAME) liboldworld/liboldworld.a
+all: $(PKGNAME)
 
-$(PKGNAME): liboldworld/liboldworld.a $(PKGNAME).c
+$(PKGNAME): $(PKGNAME).c
+	$(Q)$(MAKE) -C liboldworld/src
 	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
 	$(Q)$(CC) $(CFLAGS) $(OPTFLAGS) -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld
+	$(Q)$(STRIP) $(PKGNAME)
 
-liboldworld/liboldworld.a:
-	@$(MAKE) -C liboldworld/src
-
-install:
-	@printf "Installing...\n"
-	@printf "%s\n" "$(PKGNAME) -> $(DESTDIR)$(BINDIR)"
-	$(Q)install -D $(PKGNAME) $(DESTDIR)$(BINDIR)/$(PKGNAME)
-	$(Q)$(STRIP) $(DESTDIR)$(BINDIR)/$(PKGNAME)
-	$(Q)chown root:root $(DESTDIR)$(BINDIR)/$(PKGNAME)
-	$(Q)chmod 6755 $(DESTDIR)$(BINDIR)/$(PKGNAME)
-
-debuginstall:
+debug: $(PKGNAME).c
+	$(Q)$(MAKE) -C liboldworld/src debug
 	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
-	$(Q)$(CC) $(CFLAGS) -DDEBUG -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld -g -O0
+	$(Q)$(CC) $(CFLAGS) -g -O0 -DDEBUG -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld
+
+install: $(PKGNAME)
 	@printf "Installing...\n"
 	@printf "%s\n" "$(PKGNAME) -> $(DESTDIR)$(BINDIR)"
 	$(Q)install -D $(PKGNAME) $(DESTDIR)$(BINDIR)/$(PKGNAME)
