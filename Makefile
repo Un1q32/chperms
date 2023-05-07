@@ -3,18 +3,58 @@ PKGNAME := chperms
 PREFIX := /usr/local
 BINDIR := $(PREFIX)/bin
 OS := $(shell uname -s)
-HASGCC := $(shell command -v $(CROSS_COMPILE)gcc 2> /dev/null)
+
+HASGCC := $(shell command -v gcc 2> /dev/null)
 ifdef HASGCC
-	CC := $(CROSS_COMPILE)gcc
+	TMP_CC := gcc
 else
-	HASCLANG := $(shell command -v $(CROSS_COMPILE)clang 2> /dev/null)
+	HASCLANG := $(shell command -v clang 2> /dev/null)
 	ifdef HASCLANG
-		CC := $(CROSS_COMPILE)clang
+		TMP_CC := clang
 	else
-		CC := $(CROSS_COMPILE)cc
+		HASCC := $(shell command -v cc 2> /dev/null)
+		ifdef HASCC
+			TMP_CC := cc
+		endif
 	endif
 endif
-STRIP := $(CROSS_COMPILE)strip
+
+HASSTRIP := $(shell command -v strip 2> /dev/null)
+ifdef HASSTRIP
+	TMP_STRIP := strip
+endif
+
+ifdef CROSS_COMPILE
+	HASGCC := $(shell command -v $(CROSS_COMPILE)-gcc 2> /dev/null)
+	ifdef HASGCC
+		TMP_CC := $(CROSS_COMPILE)-gcc
+	else
+		HASCLANG := $(shell command -v $(CROSS_COMPILE)-clang 2> /dev/null)
+		ifdef HASCLANG
+			TMP_CC := $(CROSS_COMPILE)-clang
+		else
+			HASCC := $(shell command -v $(CROSS_COMPILE)-cc 2> /dev/null)
+			ifdef HASCC
+				TMP_CC := $(CROSS_COMPILE)-cc
+			endif
+		endif
+	endif
+
+	HASSTRIP := $(shell command -v $(CROSS_COMPILE)-strip 2> /dev/null)
+	ifdef HASSTRIP
+		TMP_STRIP := $(CROSS_COMPILE)-strip
+	endif
+endif
+
+ifndef TMP_CC
+	$(error No C compiler found)
+endif
+ifndef TMP_STRIP
+	$(error No strip found)
+endif
+
+CC := $(TMP_CC)
+STRIP := $(TMP_STRIP)
 
 ifndef VERBOSE
 	Q := @
