@@ -9,17 +9,17 @@
 #include "liboldworld.h"
 
 void checkfile(const char *file) {
-    const char *real = realpath(file, NULL);
+    const char * real = realpath(file, NULL);
     if (real == NULL) printerr("%s not found", file); else
     if (strncmp(real, "/srv/", 5) != 0) printerr("%s is not in /srv", file); else {
 
-    const char *user = strtok(strdup(real) + 5, "/");
+    const char * user = strtok(strdup(real) + 5, "/");
     if (getpwnam(user) == NULL) printerr("User %s does not exist", user); }
 }
 
 void chperms(const char *file) {
-    const char *real = realpath(file, NULL);
-    const struct passwd *pw = getpwnam(strtok(strdup(real) + 5, "/"));
+    const char * real = realpath(file, NULL);
+    const struct passwd * pw = getpwnam(strtok(strdup(real) + 5, "/"));
     const uid_t uid = pw->pw_uid;
     const gid_t gid = pw->pw_gid;
 
