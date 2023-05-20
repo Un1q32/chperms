@@ -73,13 +73,13 @@ CFLAGS += -Wall -Wextra -Werror -std=gnu99
 all: $(PKGNAME)
 
 $(PKGNAME): $(PKGNAME).c
-	$(Q)$(MAKE) -C liboldworld/src
+	$(Q)$(MAKE) -C liboldworld/src CROSS_COMPILE=$(CROSS_COMPILE)
 	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
 	$(Q)$(CC) $(CFLAGS) $(OPTFLAGS) -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld
 	$(Q)$(STRIP) $(PKGNAME)
 
 debug: $(PKGNAME).c
-	$(Q)$(MAKE) -C liboldworld/src debug
+	$(Q)$(MAKE) -C liboldworld/src debug CROSS_COMPILE=$(CROSS_COMPILE)
 	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
 	$(Q)$(CC) $(CFLAGS) -g -O0 -DDEBUG -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld
 
