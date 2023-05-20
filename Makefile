@@ -68,7 +68,7 @@ endif
 ifdef LTO
 	OPTFLAGS += -flto
 endif
-CFLAGS += -Wall -Wextra -Wpedantic -Werror -std=gnu99
+CFLAGS += -Wall -Wextra -Werror -std=gnu99
 
 all: $(PKGNAME)
 
