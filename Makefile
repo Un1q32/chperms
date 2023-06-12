@@ -46,15 +46,15 @@ ifdef CROSS_COMPILE
 	endif
 endif
 
-ifndef TMP_CC
-	$(error No C compiler found)
-endif
-ifndef TMP_STRIP
-	$(error No strip found)
-endif
-
 CC := $(TMP_CC)
 STRIP := $(TMP_STRIP)
+
+ifndef CC
+	$(error No C compiler found)
+endif
+ifndef STRIP
+	$(error No strip found)
+endif
 
 ifndef VERBOSE
 	Q := @
