@@ -68,20 +68,20 @@ endif
 ifdef LTO
 	OPTFLAGS += -flto
 endif
-CFLAGS += -Wall -Wextra -Werror -std=gnu99
+CFLAGS += -Wall -Wextra -Werror -std=gnu99 -Iliboldworld/src -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld
 
 all: $(PKGNAME)
 
 $(PKGNAME): $(PKGNAME).c
 	$(Q)$(MAKE) -C liboldworld/src CROSS_COMPILE=$(CROSS_COMPILE)
 	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
-	$(Q)$(CC) $(CFLAGS) $(OPTFLAGS) -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld
+	$(Q)$(CC) $(CFLAGS) $(OPTFLAGS)
 	$(Q)$(STRIP) $(PKGNAME)
 
 debug: $(PKGNAME).c
 	$(Q)$(MAKE) -C liboldworld/src debug CROSS_COMPILE=$(CROSS_COMPILE)
 	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
-	$(Q)$(CC) $(CFLAGS) -g -O0 -DDEBUG -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld
+	$(Q)$(CC) $(CFLAGS) -g -O0 -DDEBUG
 
 install: $(PKGNAME)
 	@printf "Installing...\n"
