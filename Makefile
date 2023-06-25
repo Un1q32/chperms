@@ -1,25 +1,15 @@
-# Variables
 PKGNAME := chperms
 PREFIX := /usr/local
 BINDIR := $(PREFIX)/bin
 OS := $(shell uname -s)
-STRIP := strip
+STRIP := llvm-strip
+CC := clang
 
 ifndef VERBOSE
 	Q := @
 endif
 
-# Flags
-OPTFLAGS += -O2
-ifdef MARCHNATIVE
-	OPTFLAGS += -march=native
-endif
-ifdef LTO
-	OPTFLAGS += -flto
-endif
-ifdef LLD
-	OPTFLAGS += -fuse-ld=lld
-endif
+OPTFLAGS += -O2 -march=native -fuse-ld=lld -flto
 CFLAGS += -Wall -Wextra -Werror -std=gnu99 -o $(PKGNAME) $(PKGNAME).c
 
 all: $(PKGNAME)
