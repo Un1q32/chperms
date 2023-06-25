@@ -3,58 +3,7 @@ PKGNAME := chperms
 PREFIX := /usr/local
 BINDIR := $(PREFIX)/bin
 OS := $(shell uname -s)
-
-HASGCC := $(shell command -v gcc 2> /dev/null)
-ifdef HASGCC
-	TMP_CC := gcc
-else
-	HASCLANG := $(shell command -v clang 2> /dev/null)
-	ifdef HASCLANG
-		TMP_CC := clang
-	else
-		HASCC := $(shell command -v cc 2> /dev/null)
-		ifdef HASCC
-			TMP_CC := cc
-		endif
-	endif
-endif
-
-HASSTRIP := $(shell command -v strip 2> /dev/null)
-ifdef HASSTRIP
-	TMP_STRIP := strip
-endif
-
-ifdef CROSS_COMPILE
-	HASGCC := $(shell command -v $(CROSS_COMPILE)-gcc 2> /dev/null)
-	ifdef HASGCC
-		TMP_CC := $(CROSS_COMPILE)-gcc
-	else
-		HASCLANG := $(shell command -v $(CROSS_COMPILE)-clang 2> /dev/null)
-		ifdef HASCLANG
-			TMP_CC := $(CROSS_COMPILE)-clang
-		else
-			HASCC := $(shell command -v $(CROSS_COMPILE)-cc 2> /dev/null)
-			ifdef HASCC
-				TMP_CC := $(CROSS_COMPILE)-cc
-			endif
-		endif
-	endif
-
-	HASSTRIP := $(shell command -v $(CROSS_COMPILE)-strip 2> /dev/null)
-	ifdef HASSTRIP
-		TMP_STRIP := $(CROSS_COMPILE)-strip
-	endif
-endif
-
-CC := $(TMP_CC)
-STRIP := $(TMP_STRIP)
-
-ifndef CC
-	$(error No C compiler found)
-endif
-ifndef STRIP
-	$(error No strip found)
-endif
+STRIP := strip
 
 ifndef VERBOSE
 	Q := @
@@ -68,19 +17,20 @@ endif
 ifdef LTO
 	OPTFLAGS += -flto
 endif
-CFLAGS += -Wall -Wextra -Werror -std=gnu99 -Iliboldworld/src -o $(PKGNAME) $(PKGNAME).c -Lliboldworld -loldworld
+ifdef LLD
+	OPTFLAGS += -fuse-ld=lld
+endif
+CFLAGS += -Wall -Wextra -Werror -std=gnu99 -o $(PKGNAME) $(PKGNAME).c
 
 all: $(PKGNAME)
 
 $(PKGNAME): $(PKGNAME).c
-	$(Q)$(MAKE) -C liboldworld/src CROSS_COMPILE=$(CROSS_COMPILE)
-	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
+	@printf " \033[1;32mCC\033[0m %s\n" "$(PKGNAME).c"
 	$(Q)$(CC) $(CFLAGS) $(OPTFLAGS)
 	$(Q)$(STRIP) $(PKGNAME)
 
 debug: $(PKGNAME).c
-	$(Q)$(MAKE) -C liboldworld/src debug CROSS_COMPILE=$(CROSS_COMPILE)
-	@printf " \033[1;32mCC\033[0m $(PKGNAME).c\n"
+	@printf " \033[1;32mCC\033[0m %s\n" "$(PKGNAME).c"
 	$(Q)$(CC) $(CFLAGS) -g -O0 -DDEBUG
 
 install: $(PKGNAME)
@@ -96,4 +46,4 @@ uninstall:
 
 clean:
 	@printf "Cleaning...\n"
-	$(Q)$(RM) -f chperms liboldworld/liboldworld.* liboldworld/src/*.o
+	$(Q)$(RM) -f chperms
