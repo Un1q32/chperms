@@ -9,8 +9,8 @@ ifndef VERBOSE
 	Q := @
 endif
 
-OPTFLAGS += -O2 -march=native -fuse-ld=lld -flto
-CFLAGS += -Wall -Wextra -Werror -std=gnu99 -o $(PKGNAME) $(PKGNAME).c
+OPTFLAGS += -O2 -march=native -flto
+CFLAGS += -Wall -Wextra -Werror -std=gnu99 -fuse-ld=lld -o $(PKGNAME) $(PKGNAME).c
 
 all: $(PKGNAME)
 
