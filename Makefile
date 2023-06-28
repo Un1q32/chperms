@@ -10,14 +10,19 @@ ifndef VERBOSE
 endif
 
 OPTFLAGS += -O2 -march=native -flto
-CFLAGS += -Wall -Wextra -Werror -std=gnu99 -fuse-ld=lld -o $(PKGNAME) $(PKGNAME).c
+CFLAGS += -Wall -Wextra -Werror -std=gnu99
+LDFLAGS += -fuse-ld=lld
 
 all: $(PKGNAME)
 
-$(PKGNAME): $(PKGNAME).c
-	@printf " \033[1;32mCC\033[0m %s\n" "$(PKGNAME).c"
-	$(Q)$(CC) $(CFLAGS) $(OPTFLAGS)
+$(PKGNAME): $(PKGNAME).o
+	@printf " \033[1;34mLD\033[0m %s\n" "$(PKGNAME)"
+	$(Q)$(CC) $(LDFLAGS) $(OPTFLAGS) -o $(PKGNAME) $(PKGNAME).o
 	$(Q)$(STRIP) $(PKGNAME)
+
+$(PKGNAME).o: $(PKGNAME).c
+	@printf " \033[1;32mCC\033[0m %s\n" "$(PKGNAME).c"
+	$(Q)$(CC) $(CFLAGS) $(OPTFLAGS) -c $(PKGNAME).c
 
 debug: $(PKGNAME).c
 	@printf " \033[1;32mCC\033[0m %s\n" "$(PKGNAME).c"
@@ -36,4 +41,4 @@ uninstall:
 
 clean:
 	@printf "Cleaning...\n"
-	$(Q)$(RM) -f chperms
+	$(Q)$(RM) -f $(PKGNAME) $(PKGNAME).o
