@@ -24,9 +24,10 @@ $(PKGNAME).o: $(PKGNAME).c
 	@printf " \033[1;32mCC\033[0m %s\n" "$(PKGNAME).c"
 	@$(CC) $(CFLAGS) $(OPTFLAGS) -c $(PKGNAME).c
 
-debug: $(PKGNAME).c
-	@printf " \033[1;32mCC\033[0m %s\n" "$(PKGNAME).c"
-	@$(CC) $(CFLAGS) -g -O0 -DDEBUG
+debug: OPTFLAGS := -g -O0
+debug: $(PKGNAME).o
+	@printf " \033[1;34mLD\033[0m %s\n" "$(PKGNAME)"
+	@$(CC) $(LDFLAGS) $(OPTFLAGS) -o $(PKGNAME) $(PKGNAME).o
 
 install: $(PKGNAME)
 	@printf "Installing...\n"
