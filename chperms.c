@@ -42,6 +42,8 @@ int main(const int argc, const char *argv[]) {
 
         const char* user = strtok(strdup(file) + 5, "/");
         if (getpwnam(user) == NULL) printerr("User %s does not exist", user); }
+
+        if (access(file, W_OK) != 0) printerr("No write access to %s", argv[i]);
     }
 
     pthread_t thread;
