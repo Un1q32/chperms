@@ -5,6 +5,7 @@
 #include <string.h>
 #include <pwd.h>
 #include <unistd.h>
+#include <pthread.h>
 
 void printerr(const char* restrict format, ...) {
     va_list args;
@@ -14,6 +15,19 @@ void printerr(const char* restrict format, ...) {
     fprintf(stderr, "\n");
     va_end(args);
     exit(EXIT_FAILURE);
+}
+
+void chperms(const char *file) {
+    const char* real = realpath(file, NULL);
+    const struct passwd * pw = getpwnam(strtok(strdup(real) + 5, "/"));
+    const uid_t uid = pw->pw_uid;
+    const gid_t gid = pw->pw_gid;
+
+    int perms = 0664;
+    struct stat st; 
+    if (stat(real, &st) == 0 && S_ISDIR(st.st_mode)) perms = 02775;
+    if (chmod(real, perms) != 0) printerr("Failed to change permissions for %s", file);
+    if (chown(real, uid, gid) != 0) printerr("Failed to change ownership for %s", file);
 }
 
 int main(const int argc, const char *argv[]) {
@@ -30,16 +44,9 @@ int main(const int argc, const char *argv[]) {
         if (getpwnam(user) == NULL) printerr("User %s does not exist", user); }
     }
 
+    pthread_t thread;
     for (int i = 1; i < argc; i++) {
-        const char* file = realpath(argv[i], NULL);
-        const struct passwd * pw = getpwnam(strtok(strdup(file) + 5, "/"));
-        const uid_t uid = pw->pw_uid;
-        const gid_t gid = pw->pw_gid;
-
-        int perms = 0664;
-        struct stat st; 
-        if (stat(file, &st) == 0 && S_ISDIR(st.st_mode)) perms = 02775;
-        if (chmod(file, perms) != 0) printerr("Failed to change permissions for %s", argv[i]);
-        if (chown(file, uid, gid) != 0) printerr("Failed to change ownership for %s", argv[i]);
+        pthread_create(&thread, NULL, (void*)chperms, (void*)argv[i]);
     }
+    pthread_exit(NULL);
 }

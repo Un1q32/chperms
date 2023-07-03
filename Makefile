@@ -11,7 +11,7 @@ endif
 
 OPTFLAGS += -O2 -march=native -flto
 CFLAGS += -Wall -Wextra -Werror -std=gnu99
-LDFLAGS += -fuse-ld=lld
+LDFLAGS += -fuse-ld=lld -lpthread
 
 all: $(PKGNAME)
 
