@@ -42,4 +42,4 @@ uninstall:
 
 clean:
 	@printf "Cleaning...\n"
-	@$(RM) -f $(PKGNAME) $(PKGNAME).o
+	@rm -f $(PKGNAME) $(PKGNAME).o
