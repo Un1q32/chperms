@@ -1,7 +1,6 @@
 PKGNAME := chperms
 PREFIX := /usr/local
 BINDIR := $(PREFIX)/bin
-OS := $(shell uname -s)
 STRIP := llvm-strip
 CC := clang
 
