@@ -30,7 +30,6 @@ install: $(PKGNAME)
 	@printf "Installing...\n"
 	@printf "%s\n" "$(PKGNAME) -> $(DESTDIR)$(BINDIR)"
 	@install -D $(PKGNAME) $(DESTDIR)$(BINDIR)/$(PKGNAME)
-	@chown root:root $(DESTDIR)$(BINDIR)/$(PKGNAME)
 	@chmod 6755 $(DESTDIR)$(BINDIR)/$(PKGNAME)
 
 uninstall:
