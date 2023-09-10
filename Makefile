@@ -12,7 +12,9 @@ OPTFLAGS := -O2 -march=native -flto
 CFLAGS := -Wall -Wextra -Werror -std=gnu99
 LDFLAGS := -fuse-ld=lld -lpthread
 
-all:
+all: chperms
+
+chperms:
 	@printf " \033[1;32mCC\033[0m %s\n" "$(PKGNAME).c"
 	@$(CC) $(CFLAGS) $(OPTFLAGS) -c $(PKGNAME).c
 	@printf " \033[1;34mLD\033[0m %s\n" "$(PKGNAME)"
