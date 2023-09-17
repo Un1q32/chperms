@@ -8,12 +8,12 @@
 #include <pthread.h>
 
 void printerr(const char* restrict format, ...) {
+    char msg[1024];
     va_list args;
     va_start(args, format);
-    fprintf(stderr, "\033[1;31mError:\033[0m ");
-    vfprintf(stderr, format, args);
-    fprintf(stderr, "\n");
+    vsnprintf(msg, 1024, format, args);
     va_end(args);
+    fprintf(stderr, "\033[1;31mError:\033[0m %s\n", msg);
     exit(EXIT_FAILURE);
 }
 
@@ -30,21 +30,21 @@ void chperms(const char *file) {
     if (chown(real, uid, gid) != 0) printerr("Failed to change ownership for %s", file);
 }
 
-int main(const int argc, const char *argv[]) {
+int main(int argc, char *argv[]) {
     if (geteuid() != 0) printerr("Must be run as root or setuid");
 
     if (argc < 2) { fprintf(stderr, "Usage: chperms <file1> [file2] [file3]\n"); exit(EXIT_FAILURE); }
 
     for (int i = 1; i < argc; i++) {
         const char* file = realpath(argv[i], NULL);
-        if (file == NULL) printerr("%s not found", argv[i]); else
-        if (strncmp(file, "/srv/", 5) != 0) printerr("%s is not in /srv", argv[i]); else {
+        if (file == NULL) printerr("%s not found", argv[i]); else {
+        if (strncmp(file, "/srv/", 5) != 0) printerr("%s is not in /srv", argv[i]);
 
         const char* user = strtok(strdup(file) + 5, "/");
-        if (getpwnam(user) == NULL) printerr("User %s does not exist", user); }
+        if (getpwnam(user) == NULL) printerr("User %s does not exist", user);
 
         if (access(file, W_OK) != 0) printerr("No write access to %s", argv[i]);
-    }
+    }}
 
     pthread_t thread;
     for (int i = 1; i < argc; i++) {
