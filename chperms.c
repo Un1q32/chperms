@@ -24,7 +24,7 @@ void chperms(const char *file) {
     const gid_t gid = pw->pw_gid;
 
     int perms = 0664;
-    struct stat st; 
+    struct stat st;
     if (stat(real, &st) == 0 && S_ISDIR(st.st_mode)) perms = 02775;
     if (chmod(real, perms) != 0) printerr("Failed to change permissions for %s", file);
     if (chown(real, uid, gid) != 0) printerr("Failed to change ownership for %s", file);
