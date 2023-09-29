@@ -26,6 +26,7 @@ void chperms(const char *file) {
     int perms = 0664;
     struct stat st;
     if (stat(real, &st) == 0 && S_ISDIR(st.st_mode)) perms = 02775;
+    else if (access(real, X_OK) == 0) perms = 0775;
     if (chmod(real, perms) != 0) printerr("Failed to change permissions for %s", file);
     if (chown(real, uid, gid) != 0) printerr("Failed to change ownership for %s", file);
 }
@@ -42,8 +43,6 @@ int main(int argc, char *argv[]) {
 
         const char* user = strtok(strdup(file) + 5, "/");
         if (getpwnam(user) == NULL) printerr("User %s does not exist", user);
-
-        if (access(file, W_OK) != 0) printerr("No write access to %s", argv[i]);
     }}
 
     pthread_t thread;
