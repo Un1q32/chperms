@@ -1,16 +1,15 @@
 PKGNAME := chperms
 PREFIX := /usr/local
 BINDIR := $(PREFIX)/bin
-STRIP := llvm-strip
-CC := clang
+STRIP := strip
 
 ifdef VERBOSE
 	SHELL += -x
 endif
 
-OPTFLAGS := -O2 -march=native -flto
+OPTFLAGS := -O2
 CFLAGS := -Wall -Wextra -Werror -std=gnu99
-LDFLAGS := -fuse-ld=lld -lpthread
+LDFLAGS := -lpthread
 
 all: release
 
