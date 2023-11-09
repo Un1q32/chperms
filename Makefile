@@ -9,7 +9,6 @@ endif
 
 OPTFLAGS := -O2
 CFLAGS := -Wall -Wextra -Werror -std=gnu99
-LDFLAGS := -lpthread
 
 all: release
 
