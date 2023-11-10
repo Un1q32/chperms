@@ -73,7 +73,6 @@ int main(int argc, char *argv[]) {
         const uid_t uid = pw->pw_uid;
         const gid_t gid = pw->pw_gid;
 
-        int perms = 0664;
         struct stat st;
         if (lstat(file, &st) != 0)
             printerr("Failed to stat %s", argv[i]);
@@ -82,6 +81,7 @@ int main(int argc, char *argv[]) {
                 printerr("Failed to change ownership for %s", argv[i]);
             continue;
         }
+        int perms = 0664;
         if (S_ISDIR(st.st_mode))
             perms = 02775;
         else if (access(file, X_OK) == 0)
