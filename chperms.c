@@ -10,6 +10,8 @@ void printerr(const char* restrict format, ...) {
     va_list args;
     va_start(args, format);
     char msg[vsnprintf(NULL, 0, format, args) + 1];
+    va_end(args);
+    va_start(args, format);
     vsnprintf(msg, sizeof(msg), format, args);
     va_end(args);
     fprintf(stderr, "\033[1;31mError:\033[0m %s\n", msg);
