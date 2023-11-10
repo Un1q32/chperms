@@ -74,21 +74,10 @@ int main(int argc, char *argv[]) {
         const gid_t gid = pw->pw_gid;
 
         struct stat st;
-        if (lstat(file, &st) != 0)
-            printerr("Failed to stat %s", argv[i]);
-        if (S_ISLNK(st.st_mode)) {
-            if (lchown(file, uid, gid) != 0)
-                printerr("Failed to change ownership for %s", argv[i]);
-            continue;
-        }
-        int perms = 0664;
-        if (S_ISDIR(st.st_mode))
-            perms = 02775;
-        else if (access(file, X_OK) == 0)
-            perms = 0775;
-        if (chmod(file, perms) != 0)
-            printerr("Failed to change permissions for %s", argv[i]);
-        if (chown(file, uid, gid) != 0)
+        if (lstat(file, &st) == 0 && !S_ISLNK(st.st_mode))
+            if (chmod(file, st.st_mode | S_IWGRP) != 0)
+                printerr("Failed to change permissions for %s", argv[i]);
+        if (lchown(file, uid, gid) != 0)
             printerr("Failed to change ownership for %s", argv[i]);
     }
 
