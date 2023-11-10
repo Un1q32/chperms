@@ -21,22 +21,22 @@ void printerr(const char* restrict format, ...) {
 }
 
 char* abspath(char* path) {
-    if (path == NULL) return NULL;
+    if (path == NULL)
+        return NULL;
+
+    struct stat st;
+    if (lstat(path, &st) != 0)
+        return NULL;
+
     char* ret = malloc(PATH_MAX);
     char cwd[PATH_MAX];
     getcwd(cwd, PATH_MAX);
-    if (path[0] == '/') {
+    if (path[0] == '/')
         strcpy(ret, path);
-    } else {
+    else {
         strcpy(ret, cwd);
         strcat(ret, "/");
         strcat(ret, path);
-    }
-
-    struct stat st;
-    if (lstat(ret, &st) != 0) {
-        free(ret);
-        return NULL;
     }
 
     chdir(dirname(ret));
@@ -51,32 +51,45 @@ char* abspath(char* path) {
 }
 
 int main(int argc, char *argv[]) {
-    if (geteuid() != 0) printerr("Must be run as root or setuid");
+    if (geteuid() != 0)
+        printerr("Must be run as root or setuid");
 
-    if (argc < 2) { fprintf(stderr, "Usage: chperms <file1> [file2] [file3]\n"); exit(EXIT_FAILURE); }
+    if (argc < 2) {
+        fprintf(stderr, "Usage: chperms <file1> [file2] [file3]\n");
+        exit(EXIT_FAILURE);
+    }
 
     for (int i = 1; i < argc; i++) {
         const char* file = abspath(argv[i]);
-        if (file == NULL) printerr("%s not found", argv[i]);
-        if (strncmp(file, "/srv/", 5) != 0) printerr("%s is not in /srv", argv[i]);
+        if (file == NULL)
+            printerr("%s not found", argv[i]);
+        if (strncmp(file, "/srv/", 5) != 0)
+            printerr("%s is not in /srv", argv[i]);
 
         const char* user = strtok(strdup(file) + 5, "/");
         const struct passwd * pw = getpwnam(user);
-        if (pw == NULL) printerr("User %s does not exist", user);
+        if (pw == NULL)
+            printerr("User %s does not exist", user);
         const uid_t uid = pw->pw_uid;
         const gid_t gid = pw->pw_gid;
 
         int perms = 0664;
         struct stat st;
-        if (lstat(file, &st) != 0) printerr("Failed to stat %s", argv[i]);
+        if (lstat(file, &st) != 0)
+            printerr("Failed to stat %s", argv[i]);
         if (S_ISLNK(st.st_mode)) {
-            if (lchown(file, uid, gid) != 0) printerr("Failed to change ownership for %s", argv[i]);
+            if (lchown(file, uid, gid) != 0)
+                printerr("Failed to change ownership for %s", argv[i]);
             continue;
         }
-        if (S_ISDIR(st.st_mode)) perms = 02775;
-        else if (access(file, X_OK) == 0) perms = 0775;
-        if (chmod(file, perms) != 0) printerr("Failed to change permissions for %s", argv[i]);
-        if (chown(file, uid, gid) != 0) printerr("Failed to change ownership for %s", argv[i]);
+        if (S_ISDIR(st.st_mode))
+            perms = 02775;
+        else if (access(file, X_OK) == 0)
+            perms = 0775;
+        if (chmod(file, perms) != 0)
+            printerr("Failed to change permissions for %s", argv[i]);
+        if (chown(file, uid, gid) != 0)
+            printerr("Failed to change ownership for %s", argv[i]);
     }
 
     return EXIT_SUCCESS;
