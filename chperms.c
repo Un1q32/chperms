@@ -42,7 +42,12 @@ char* abspath(char* path) {
     chdir(dirname(ret));
     getcwd(ret, PATH_MAX);
     const char* base = basename(path);
-    if (strcmp(base, ".") != 0) {
+    if (strcmp(base, "..") == 0) {
+        char* p = strrchr(ret, '/');
+        *p = '\0';
+        if (ret[0] == '\0')
+            strcpy(ret, "/");
+    } else if (strcmp(base, ".") != 0) {
         strcat(ret, "/");
         strcat(ret, basename(path));
     }
