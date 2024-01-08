@@ -78,6 +78,21 @@ int main(int argc, char *argv[]) {
         const uid_t uid = pw->pw_uid;
         const gid_t gid = pw->pw_gid;
 
+        uid_t realuid = getuid();
+        if (realuid != 0 && realuid != uid) {
+            int ngroups = getgroups(0, NULL);
+            gid_t groups[ngroups];
+            getgroups(ngroups, groups);
+            int found = 0;
+            for (int i = 0; i < ngroups; i++)
+                if (groups[i] == gid) {
+                    found = 1;
+                    break;
+                }
+            if (!found)
+                printerr("You must be a member of the group %s to change permissions for %s", user, argv[i]);
+        }
+
         struct stat st;
         if (lstat(file, &st) == 0 && !S_ISLNK(st.st_mode))
             if (chmod(file, st.st_mode | S_IWGRP) != 0)
