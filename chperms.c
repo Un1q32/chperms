@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
             gid_t groups[ngroups];
             getgroups(ngroups, groups);
             int found = 0;
-            for (int i = 0; i < ngroups; i++)
+            for (i = 0; i < ngroups; i++)
                 if (groups[i] == gid) {
                     found = 1;
                     break;
@@ -94,9 +94,13 @@ int main(int argc, char *argv[]) {
         }
 
         struct stat st;
-        if (lstat(file, &st) == 0 && !S_ISLNK(st.st_mode))
-            if (chmod(file, st.st_mode | S_IWGRP) != 0)
+        if (lstat(file, &st) == 0 && !S_ISLNK(st.st_mode)) {
+            mode_t perms = st.st_mode | S_IRGRP | S_IWGRP;
+            if (S_ISDIR(st.st_mode))
+                perms |= S_ISGID | S_IXGRP;
+            if (chmod(file, perms) != 0)
                 printerr("Failed to change permissions for %s", argv[i]);
+        }
         if (lchown(file, uid, gid) != 0)
             printerr("Failed to change ownership for %s", argv[i]);
     }
