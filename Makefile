@@ -3,38 +3,35 @@ PREFIX := /usr/local
 BINDIR := $(PREFIX)/bin
 STRIP := strip
 
-ifdef VERBOSE
-	SHELL += -x
+ifndef VERBOSE
+V := @
 endif
 
-OPTFLAGS := -O2
+OPTFLAGS := -Os
 CFLAGS := -Wall -Wextra -Werror -std=gnu99
 
-all: release
+all: $(PKGNAME)
 
-release:
+$(PKGNAME): $(PKGNAME).c
 	@printf " \033[1;32mCC\033[0m %s\n" "$(PKGNAME).c"
-	@$(CC) $(CFLAGS) $(OPTFLAGS) -c $(PKGNAME).c
+	$(V)$(CC) $(CFLAGS) $(OPTFLAGS) -c $(PKGNAME).c
 	@printf " \033[1;34mLD\033[0m %s\n" "$(PKGNAME)"
-	@$(CC) $(LDFLAGS) $(OPTFLAGS) -o $(PKGNAME) $(PKGNAME).o
-	@$(STRIP) $(PKGNAME)
+	$(V)$(CC) $(LDFLAGS) $(OPTFLAGS) -o $(PKGNAME) $(PKGNAME).o
 
-debug:
-	@printf " \033[1;35mCC\033[0m %s\n" "$(PKGNAME).c"
-	@$(CC) $(CFLAGS) -g -c $(PKGNAME).c
-	@printf " \033[1;34mLD\033[0m %s\n" "$(PKGNAME)"
-	@$(CC) $(LDFLAGS) -g -o $(PKGNAME) $(PKGNAME).o
+debug: OPTFLAGS := -g
+debug: all
 
 install: $(PKGNAME)
 	@printf "Installing...\n"
 	@printf "%s\n" "$(PKGNAME) -> $(DESTDIR)$(BINDIR)"
-	@install -D $(PKGNAME) $(DESTDIR)$(BINDIR)/$(PKGNAME)
-	@chmod 6755 $(DESTDIR)$(BINDIR)/$(PKGNAME)
+	$(V)install -D $(PKGNAME) $(DESTDIR)$(BINDIR)/$(PKGNAME)
+	$(V)$(STRIP) $(DESTDIR)$(BINDIR)/$(PKGNAME)
+	$(V)chmod 6755 $(DESTDIR)$(BINDIR)/$(PKGNAME)
 
 uninstall:
 	@printf "Uninstalling...\n"
-	@$(RM) -f $(DESTDIR)$(BINDIR)/$(PKGNAME)
+	$(V)$(RM) -f $(DESTDIR)$(BINDIR)/$(PKGNAME)
 
 clean:
 	@printf "Cleaning...\n"
-	@rm -f $(PKGNAME) $(PKGNAME).o
+	$(V)rm -f $(PKGNAME) $(PKGNAME).o
