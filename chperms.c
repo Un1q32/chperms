@@ -64,6 +64,7 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
+    uid_t realuid = getuid();
     for (int i = 1; i < argc; i++) {
         const char* file = abspath(argv[i]);
         if (file == NULL)
@@ -80,7 +81,6 @@ int main(int argc, char *argv[]) {
         const uid_t uid = pw->pw_uid;
         const gid_t gid = pw->pw_gid;
 
-        uid_t realuid = getuid();
         if (realuid != 0 && realuid != uid) {
             int ngroups = getgroups(0, NULL);
             gid_t groups[ngroups];
