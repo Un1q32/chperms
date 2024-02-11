@@ -71,7 +71,9 @@ int main(int argc, char *argv[]) {
         if (strncmp(file, "/srv/", 5) != 0)
             printerr("%s is not in /srv", argv[i]);
 
-        const char* user = strtok(strdup(file) + 5, "/");
+        char filecopy[strlen(file) + 1];
+        strcpy(filecopy, file);
+        const char* user = strtok(filecopy + 5, "/");
         const struct passwd * pw = getpwnam(user);
         if (pw == NULL)
             printerr("User %s does not exist", user);
