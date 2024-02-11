@@ -1,12 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <pwd.h>
-#include <unistd.h>
 #include <limits.h>
 #include <libgen.h>
+#include <pwd.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 void printerr(const char* restrict format, ...) {
     va_list args, args2;
@@ -85,10 +86,10 @@ int main(int argc, char *argv[]) {
             int ngroups = getgroups(0, NULL);
             gid_t groups[ngroups];
             getgroups(ngroups, groups);
-            int found = 0;
-            for (i = 0; i < ngroups; i++)
-                if (groups[i] == gid) {
-                    found = 1;
+            bool found = false;
+            for (int j = 0; j < ngroups; j++)
+                if (groups[j] == gid) {
+                    found = true;
                     break;
                 }
             if (!found)
