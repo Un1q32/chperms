@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
     printerr("Must be run as root or setuid");
 
   if (argc < 2) {
-    fprintf(stderr, "Usage: chperms <file1> [file2] [file3]\n");
+    fprintf(stderr, "Usage: chperms <file> [files ...]\n");
     exit(EXIT_FAILURE);
   }
 
