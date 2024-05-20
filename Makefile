@@ -13,10 +13,8 @@ CFLAGS := -Wall -Wextra -Werror -std=gnu99
 all: $(PKGNAME)
 
 $(PKGNAME): $(PKGNAME).c
-	@printf " \033[1;32mCC\033[0m %s\n" "$(PKGNAME).c"
-	$(V)$(CC) $(CFLAGS) $(OPTFLAGS) -c $(PKGNAME).c
-	@printf " \033[1;34mLD\033[0m %s\n" "$(PKGNAME)"
-	$(V)$(CC) $(LDFLAGS) $(OPTFLAGS) -o $(PKGNAME) $(PKGNAME).o
+	@printf " \033[1;32mCC\033[0m %s\n" "$(PKGNAME)"
+	$(V)$(CC) $(CFLAGS) $(LDFLAGS) $(OPTFLAGS) -o $(PKGNAME) $(PKGNAME).c
 
 debug: OPTFLAGS := -g
 debug: all
