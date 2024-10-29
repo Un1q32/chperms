@@ -31,7 +31,7 @@ char *abspath(char *path) {
 
   char cwd[PATH_MAX];
   getcwd(cwd, PATH_MAX);
-  char *ret = malloc(strlen(cwd) + strlen(path) + 2);
+  char *ret = malloc(PATH_MAX + strlen(path) + 1);
   if (!ret)
     printerr("Failed to allocate memory");
   if (path[0] == '/')
