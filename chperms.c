@@ -29,11 +29,11 @@ char *abspath(char *path) {
   if (lstat(path, &st) != 0)
     return NULL;
 
-  char *ret = malloc(PATH_MAX);
-  if (!ret)
-    printerr("Failed to allocate memory");
   char cwd[PATH_MAX];
   getcwd(cwd, PATH_MAX);
+  char *ret = malloc(strlen(cwd) + strlen(path) + 2);
+  if (!ret)
+    printerr("Failed to allocate memory");
   if (path[0] == '/')
     strcpy(ret, path);
   else {
@@ -44,7 +44,7 @@ char *abspath(char *path) {
 
   chdir(dirname(ret));
   getcwd(ret, PATH_MAX);
-  const char *base = basename(path);
+  char *base = basename(path);
   if (strcmp(base, "..") == 0) {
     char *p = strrchr(ret, '/');
     *p = '\0';
