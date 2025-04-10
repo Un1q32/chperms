@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <libgen.h>
 #include <limits.h>
 #include <pwd.h>
@@ -21,7 +22,7 @@ void printerr(const char *restrict format, ...) {
   exit(EXIT_FAILURE);
 }
 
-char *abspath(char *path) {
+static char *abspath(char *path) {
   if (path == NULL)
     return NULL;
 
@@ -30,7 +31,8 @@ char *abspath(char *path) {
     return NULL;
 
   char cwd[PATH_MAX];
-  getcwd(cwd, PATH_MAX);
+  if (!getcwd(cwd, PATH_MAX))
+    printerr("getcwd: %s", strerror(errno));
   char *ret = malloc(PATH_MAX + strlen(path) + 1);
   if (!ret)
     printerr("Failed to allocate memory");
@@ -42,8 +44,10 @@ char *abspath(char *path) {
     strcat(ret, path);
   }
 
-  chdir(dirname(ret));
-  getcwd(ret, PATH_MAX);
+  if (chdir(dirname(ret)) != 0)
+    printerr("chdir: %s", strerror(errno));
+  if (!getcwd(ret, PATH_MAX))
+    printerr("chdir: %s", strerror(errno));
   char *base = basename(path);
   if (strcmp(base, "..") == 0) {
     char *p = strrchr(ret, '/');
@@ -54,7 +58,8 @@ char *abspath(char *path) {
     strcat(ret, "/");
     strcat(ret, basename(path));
   }
-  chdir(cwd);
+  if (chdir(cwd) != 0)
+    printerr("chdir: %s", strerror(errno));
   return ret;
 }
 
@@ -87,7 +92,8 @@ int main(int argc, char *argv[]) {
     if (realuid != 0 && realuid != uid) {
       int ngroups = getgroups(0, NULL);
       gid_t groups[ngroups];
-      getgroups(ngroups, groups);
+      if (getgroups(ngroups, groups) != 0)
+        printerr("getgroups: %s", strerror(errno));
       bool found = false;
       for (int j = 0; j < ngroups; j++)
         if (groups[j] == gid) {
