@@ -1,7 +1,7 @@
 PKGNAME := chperms
 PREFIX := /usr/local
 BINDIR := $(PREFIX)/bin
-STRIP := llvm-strip
+STRIP := strip
 
 ifndef VERBOSE
 V := @
