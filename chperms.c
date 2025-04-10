@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
     if (realuid != 0 && realuid != uid) {
       int ngroups = getgroups(0, NULL);
       gid_t groups[ngroups];
-      if (getgroups(ngroups, groups) != 0)
+      if (getgroups(ngroups, groups) == -1)
         printerr("getgroups: %s", strerror(errno));
       bool found = false;
       for (int j = 0; j < ngroups; j++)
